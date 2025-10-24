@@ -20,31 +20,6 @@
     Update the parameters section below to change deployment settings
 #>
 
-[CmdletBinding()]
-param(
-    [Parameter()]
-    [string]$OSVersion = "Windows 11 25H2 x64",
-    
-    [Parameter()]
-    [ValidateSet('Pro','Home','Enterprise','Education')]
-    [string]$OSEdition = "Pro",
-    
-    [Parameter()]
-    [string]$OSLanguage = "en-us",
-    
-    [Parameter()]
-    [bool]$ZeroTouch = $true,
-    
-    [Parameter()]
-    [bool]$FindLocal = $false,
-    
-    [Parameter()]
-    [bool]$UseLocalDrivers = $false,
-    
-    [Parameter()]
-    [string]$DriverPath = ""
-)
-
 # ============================================
 # CONFIGURATION - Edit these values as needed
 # ============================================
@@ -125,7 +100,3 @@ if ($UseLocalDrivers) {
 
 # Start OSDCloud deployment
 Start-OSDCloud @OSDCloudParams
-
-Write-Host ""
-Write-Host "Deployment process initiated..." -ForegroundColor Green
-Write-Host ""
