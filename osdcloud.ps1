@@ -1,15 +1,19 @@
 # --- OSDCloud Deployment Parameters ---
 
+Write-Output "Testing CloudOS Deployment 1.0"
+
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+
 # OS configuration
-$OSName       = 'Windows 11 24H2 x64'
+$OSName       = 'Windows 11 25H2 x64'
 $OSEdition    = 'Pro'
 $OSActivation = 'Retail'
 $OSLanguage   = 'en-us'
 
 # Paths for local repositories
-$LocalOSPath      = "D:\Sources\Windows11_24H2"      # Path to extracted OS (install.wim/install.esd)
+$LocalOSPath      = "D:\OS\Windows11_25H2"      # Path to extracted OS (install.wim/install.esd)
 $LocalDriversPath = "D:\Drivers"                     # Root folder containing model-specific driver folders
-$LocalUpdatesPath = "D:\Updates\Windows11_24H2"     # Folder containing CAB/MSU updates (optional)
+$LocalUpdatesPath = "D:\Updates\Windows11_25H2"     # Folder containing CAB/MSU updates (optional)
 
 # --- OSDCloud Options ---
 $Global:MyOSDCloud = [ordered]@{
@@ -19,7 +23,6 @@ $Global:MyOSDCloud = [ordered]@{
     WindowsUpdate           = $true   # Fallback online updates if no local updates
     WindowsUpdateDrivers    = $true   # Fallback online drivers if no local drivers
     WindowsDefenderUpdate   = $true
-    SetTimeZone             = $true
     ClearDiskConfirm        = $false
     ShutdownSetupComplete   = $false
     SyncMSUpCatDriverUSB    = $true
