@@ -36,11 +36,10 @@ $Model = $ComputerSystem.Version
 
 Write-Output "Detected $Model"
 write-output "$model"
-write-output "$modeldriverspath"
 
 $DriverParam = @{}
 $ModelDriverPath = Join-Path $LocalDriversPath $Model
-write-output "$ModelDriverPath"
+$ModelDriverPath
 if (Test-Path $ModelDriverPath) {
     Write-Host "Local drivers found for $Model at $ModelDriverPath" -ForegroundColor Cyan
     $DriverParam = @{ LocalDrivers = $ModelDriverPath }
