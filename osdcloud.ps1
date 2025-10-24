@@ -34,6 +34,10 @@ $ComputerSystem = Get-CimInstance Win32_ComputerSystemProduct
 #$Model = $ComputerSystem.Model.Replace(" ", "_")   # Model folder names should match this
 $Model = $ComputerSystem.Version
 
+Write-Output "Detected $Model.version"
+write-output "$model"
+write-output "$modeldriverpath"
+
 $DriverParam = @{}
 $ModelDriverPath = Join-Path $LocalDriversPath $Model
 if (Test-Path $ModelDriverPath) {
