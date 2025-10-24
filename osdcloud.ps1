@@ -11,9 +11,9 @@ $OSActivation = 'Retail'
 $OSLanguage   = 'en-us'
 
 # Paths for local repositories
-$LocalOSPath      = "D:\OS\Windows11_25H2"      # Path to extracted OS (install.wim/install.esd)
-$LocalDriversPath = "D:\Drivers"                     # Root folder containing model-specific driver folders
-$LocalUpdatesPath = "D:\Updates\Windows11_25H2"     # Folder containing CAB/MSU updates (optional)
+$LocalOSPath      = "C:\OSDCloud\OS\Windows11_25H2"      # Path to extracted OS (install.wim/install.esd)
+$LocalDriversPath = "C:\OSDCloud\Drivers"                     # Root folder containing model-specific driver folders
+$LocalUpdatesPath = "C:\OSDCloud\Updates\Windows11_25H2"     # Folder containing CAB/MSU updates (optional)
 
 # --- OSDCloud Options ---
 $Global:MyOSDCloud = [ordered]@{
