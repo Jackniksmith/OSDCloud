@@ -30,8 +30,9 @@ $Global:MyOSDCloud = [ordered]@{
 }
 
 # --- Driver detection ---
-$ComputerSystem = Get-CimInstance Win32_ComputerSystem
-$Model = $ComputerSystem.Model.Replace(" ", "_")   # Model folder names should match this
+$ComputerSystem = Get-CimInstance Win32_ComputerSystemProduct
+#$Model = $ComputerSystem.Model.Replace(" ", "_")   # Model folder names should match this
+$Model = $ComputerSystem.Version
 
 $DriverParam = @{}
 $ModelDriverPath = Join-Path $LocalDriversPath $Model
