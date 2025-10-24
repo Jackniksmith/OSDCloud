@@ -1,60 +1,70 @@
-Write-Output "OSDCloud Imager"
+# --- OSDCloud Deployment Parameters ---
 
-# ======= Parameters =======
-<#
-$OSVersion      = "24H2"                   # Windows version
-$OSName         = "11"                     # Major OS version
-$OSEdition      = "Pro"                    # Edition
-$OSLanguage     = "en-us"                  # Language
-$OSActivation   = "Retail"                 # Activation type
-$ZTI            = $true                     # Zero Touch Installation switch
-$WipeDisk       = $true                     # Should the disk be wiped
-$NoPrompt       = $true                     # Suppress all prompts
-
-# ======= Initialization =======
-Start-Sleep -Seconds 10
-
-# ======= Build Start-OSDCloud Parameters Dynamically =======
-$params = @{
-    OSName        = "Windows $OSVersion x64"
-    OSLanguage    = $OSLanguage
-    OSEdition     = $OSEdition
-    OSActivation  = $OSActivation
-}
-
-if ($ZTI)        { $params.ZTI       = $true }
-if ($WipeDisk)   { $params.WipeDisk  = $true }
-if ($NoPrompt)   { $params.NoPrompt  = $true }
-
-# ======= Run OSDCloud =======
-Start-OSDCloud @params
-#>
-
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-
-#Variables to define the Windows OS / Edition etc to be applied during OSDCloud
-$OSName = 'Windows 11 24H2 x64'
-$OSEdition = 'Pro'
+# OS configuration
+$OSName       = 'Windows 11 24H2 x64'
+$OSEdition    = 'Pro'
 $OSActivation = 'Retail'
-$OSLanguage = 'en-us'
+$OSLanguage   = 'en-us'
 
-#Set OSDCloud Vars
+# Paths for local repositories
+$LocalOSPath      = "D:\Sources\Windows11_24H2"      # Path to extracted OS (install.wim/install.esd)
+$LocalDriversPath = "D:\Drivers"                     # Root folder containing model-specific driver folders
+$LocalUpdatesPath = "D:\Updates\Windows11_24H2"     # Folder containing CAB/MSU updates (optional)
+
+# --- OSDCloud Options ---
 $Global:MyOSDCloud = [ordered]@{
-    Restart = [bool]$False
-    RecoveryPartition = [bool]$true
-    OEMActivation = [bool]$True
-    WindowsUpdate = [bool]$true
-    WindowsUpdateDrivers = [bool]$true
-    WindowsDefenderUpdate = [bool]$true
-    SetTimeZone = [bool]$true
-    ClearDiskConfirm = [bool]$False
-    ShutdownSetupComplete = [bool]$false
-    SyncMSUpCatDriverUSB = [bool]$true
-    CheckSHA1 = [bool]$true
+    Restart                 = $false
+    RecoveryPartition       = $true
+    OEMActivation           = $true
+    WindowsUpdate           = $true   # Fallback online updates if no local updates
+    WindowsUpdateDrivers    = $true   # Fallback online drivers if no local drivers
+    WindowsDefenderUpdate   = $true
+    SetTimeZone             = $true
+    ClearDiskConfirm        = $false
+    ShutdownSetupComplete   = $false
+    SyncMSUpCatDriverUSB    = $true
+    CheckSHA1               = $true
 }
 
-#Launch OSDCloud
-Write-Host "Starting OSDCloud" -ForegroundColor Green
-write-host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage"
+# --- Driver detection ---
+$ComputerSystem = Get-CimInstance Win32_ComputerSystem
+$Model = $ComputerSystem.Model.Replace(" ", "_")   # Model folder names should match this
 
-Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage
+$DriverParam = @{}
+$ModelDriverPath = Join-Path $LocalDriversPath $Model
+if (Test-Path $ModelDriverPath) {
+    Write-Host "Local drivers found for $Model at $ModelDriverPath" -ForegroundColor Cyan
+    $DriverParam = @{ LocalDrivers = $ModelDriverPath }
+} else {
+    Write-Host "No local drivers found for $Model. Will use online drivers." -ForegroundColor Yellow
+}
+
+# --- Local updates detection ---
+$UpdateParam = @{}
+if (Test-Path $LocalUpdatesPath) {
+    Write-Host "Local updates found at $LocalUpdatesPath" -ForegroundColor Cyan
+    $UpdateParam = @{ LocalUpdates = $LocalUpdatesPath }
+} else {
+    Write-Host "No local updates found. Will use online updates." -ForegroundColor Yellow
+}
+
+# --- Start OSDCloud Deployment ---
+$OSParams = @{
+    OSName       = $OSName
+    OSEdition    = $OSEdition
+    OSActivation = $OSActivation
+    OSLanguage   = $OSLanguage
+}
+
+# Add local OS if path exists
+if (Test-Path $LocalOSPath) {
+    $OSParams.Add('LocalOS', $true)
+    $OSParams.Add('LocalPath', $LocalOSPath)
+}
+
+# Merge driver and update parameters
+$OSParams = $OSParams + $DriverParam + $UpdateParam
+
+# Launch deployment
+Write-Host "Starting OSDCloud deployment..." -ForegroundColor Green
+Start-OSDCloud @OSParams
