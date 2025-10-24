@@ -49,13 +49,13 @@ param(
 # CONFIGURATION - Edit these values as needed
 # ============================================
 # Uncomment and modify to override parameters:
-# $OSVersion = "Windows 11 24H2 x64"
-# $OSEdition = "Enterprise"
-# $OSLanguage = "en-gb"
+$OSVersion = "Windows 11 24H2 x64"
+$OSEdition = "Enterprise"
+$OSLanguage = "en-gb"
 # $ZeroTouch = $true
-# $FindLocal = $true
-# $UseLocalDrivers = $true
-# $DriverPath = "C:\OSDCloud\Drivers"  # Custom driver location (optional)
+$FindLocal = $true
+$UseLocalDrivers = $true
+$DriverPath = "C:\OSDCloud\Drivers"  # Custom driver location (optional)
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
