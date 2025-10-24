@@ -1,13 +1,30 @@
-write-output "OSDCloud Imager"
+Write-Output "OSDCloud Imager"
 
-$version = "24h2"
-$wipedisk = $true
-$os = "11"
-$OSEdition = "Pro"
-$cleardiskconfirm = "-noprompt"
+# ======= Parameters =======
+$OSVersion      = "24H2"                   # Windows version
+$OSName         = "11"                     # Major OS version
+$OSEdition      = "Pro"                    # Edition
+$OSLanguage     = "en-us"                  # Language
+$OSActivation   = "Retail"                 # Activation type
+$ZTI            = $true                     # Zero Touch Installation switch
+$WipeDisk       = $true                     # Should the disk be wiped
+$NoPrompt       = $true                     # Suppress all prompts
 
-sleep 20
+# ======= Initialization =======
+Start-Sleep -Seconds 10
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-Start-OSDCloud -OSName 'Windows 11 24h2 x64' -OSLanguage en-us -OSEdition Pro -OSActivation Retail -zti -wipedisk $cleardisk
 
-sleep 20
+# ======= Build Start-OSDCloud Parameters Dynamically =======
+$params = @{
+    OSName        = "Windows $OSVersion x64"
+    OSLanguage    = $OSLanguage
+    OSEdition     = $OSEdition
+    OSActivation  = $OSActivation
+}
+
+if ($ZTI)        { $params.ZTI       = $true }
+if ($WipeDisk)   { $params.WipeDisk  = $true }
+if ($NoPrompt)   { $params.NoPrompt  = $true }
+
+# ======= Run OSDCloud =======
+Start-OSDCloud @params
