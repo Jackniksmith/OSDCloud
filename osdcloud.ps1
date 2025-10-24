@@ -10,10 +10,11 @@ $OSEdition    = 'Pro'
 $OSActivation = 'Retail'
 $OSLanguage   = 'en-us'
 
-# Paths for local repositories
+<# # Paths for local repositories
 $LocalOSPath      = "C:\OSDCloud\OS\Windows11_25H2"      # Path to extracted OS (install.wim/install.esd)
 $LocalDriversPath = "C:\OSDCloud\Drivers"                     # Root folder containing model-specific driver folders
 $LocalUpdatesPath = "C:\OSDCloud\Updates\Windows11_25H2"     # Folder containing CAB/MSU updates (optional)
+#>
 
 # --- OSDCloud Options ---
 $Global:MyOSDCloud = [ordered]@{
@@ -28,7 +29,7 @@ $Global:MyOSDCloud = [ordered]@{
     SyncMSUpCatDriverUSB    = $true
     CheckSHA1               = $true
 }
-
+<#
 # --- Driver detection ---
 $ComputerSystem = Get-CimInstance Win32_ComputerSystemProduct
 #$Model = $ComputerSystem.Model.Replace(" ", "_")   # Model folder names should match this
@@ -36,6 +37,7 @@ $Model = $ComputerSystem.Version
 
 Write-Output "Detected $Model"
 write-output "$model"
+
 
 $DriverParam = @{}
 $ModelDriverPath = Join-Path $LocalDriversPath $Model
@@ -56,6 +58,8 @@ if (Test-Path $LocalUpdatesPath) {
     Write-Host "No local updates found. Will use online updates." -ForegroundColor Yellow
 }
 
+#>
+
 # --- Start OSDCloud Deployment ---
 $OSParams = @{
     OSName       = $OSName
@@ -63,15 +67,21 @@ $OSParams = @{
     OSActivation = $OSActivation
     OSLanguage   = $OSLanguage
 }
-
+<#
 # Add local OS if path exists
 if (Test-Path $LocalOSPath) {
     $OSParams.Add('LocalOS', $true)
     $OSParams.Add('LocalPath', $LocalOSPath)
 }
 
+#>
+
 # Merge driver and update parameters
+
+<#
 $OSParams = $OSParams + $DriverParam + $UpdateParam
+
+#>
 
 # Launch deployment
 Write-Host "Starting OSDCloud deployment..." -ForegroundColor Green
