@@ -2,6 +2,8 @@
 
 Write-Output "Testing CloudOS Deployment 1.0"
 
+pause
+
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 
 # OS configuration
